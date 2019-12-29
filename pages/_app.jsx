@@ -1,11 +1,13 @@
 import React from "react";
 import App, { Container as NextContainer } from "next/app";
 import Head from "next/head";
+// Import boostrap components
 import Container from "react-bootstrap/Container";
 import Jumbotron from "react-bootstrap/Jumbotron";
+// Import a Navbar component, which we will create in the next step
 import Navbar from "../components/Navbar";
-
 class MyApp extends App {
+  // This ensures that user details are passed to each page
   static async getInitialProps({ Component, ctx }) {
     let pageProps = {};
     if (Component.getInitialProps) {
