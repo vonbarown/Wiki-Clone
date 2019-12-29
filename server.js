@@ -20,7 +20,6 @@ const handle = app.getRequestHandler();
 app.prepare().then(() => {
   const server = express();
 
-  // 2 -
   const sessionConfig = {
     secret: uid.sync(18),
     cookie: {
@@ -32,7 +31,7 @@ app.prepare().then(() => {
   server.use(session(sessionConfig));
   server.use(bodyParser.json());
 
-  // 3 - configuring Auth0Strategy
+  //configuring Auth0Strategy
   const auth0Strategy = new Auth0Strategy(
     {
       domain: process.env.AUTH0_DOMAIN,
@@ -50,12 +49,12 @@ app.prepare().then(() => {
     { useNewUrlParser: true }
   );
 
-  // 4 - configuring Passport
+  // configuring Passport
   passport.use(auth0Strategy);
   passport.serializeUser((user, done) => done(null, user));
   passport.deserializeUser((user, done) => done(null, user));
 
-  // 5 - adding Passport and authentication routes
+  // adding Passport and authentication routes
   server.use(passport.initialize());
   server.use(passport.session());
   server.use(authRoutes);

@@ -15,7 +15,7 @@ export default function Write({ user }) {
             text: text.replace(/\n/g, "<br />"),
             user
         };
-        // Making a POST request to our API
+        // Making a POST request to API
         axios
             .post("/api/create-article", reqData)
             .then(res => {
