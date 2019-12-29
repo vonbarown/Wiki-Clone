@@ -7,12 +7,15 @@ const passport = require("passport");
 const Auth0Strategy = require("passport-auth0");
 const uid = require("uid-safe");
 const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
+const articlesAPI = require("./api/articles");
 
 const authRoutes = require("./api/auth-routes");
 
 const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });
 const handle = app.getRequestHandler();
+
 
 app.prepare().then(() => {
   const server = express();
@@ -42,6 +45,11 @@ app.prepare().then(() => {
     }
   );
 
+  mongoose.connect(
+    process.env.MONGO_URI,
+    { useNewUrlParser: true }
+  );
+
   // 4 - configuring Passport
   passport.use(auth0Strategy);
   passport.serializeUser((user, done) => done(null, user));
@@ -51,6 +59,7 @@ app.prepare().then(() => {
   server.use(passport.initialize());
   server.use(passport.session());
   server.use(authRoutes);
+  articlesAPI(server, mongoose);
 
   // handling everything else with Next.js
   server.get("*", handle);
