@@ -23,6 +23,7 @@
     "express-session": "^1.17.0",
     "immer": "^2.1.4",
     "materialize-css": "^1.0.0",
+    "mongoose": "^5.8.3",
     "next": "^9.1.6",
     "next-transpile-modules": "^2.0.0",
     "passport": "^0.4.1",

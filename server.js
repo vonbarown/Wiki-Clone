@@ -1,17 +1,15 @@
 require("dotenv").config();
+const express = require("express");
 const http = require("http");
+const next = require("next");
 const session = require("express-session");
 const passport = require("passport");
 const Auth0Strategy = require("passport-auth0");
 const uid = require("uid-safe");
+const bodyParser = require("body-parser");
 
-const express = require('express');
-const next = require('next');
-const cors = require('cors');
-const bodyparser = require('body-parser');
+const authRoutes = require("./api/auth-routes");
 
-const port = parseInt(process.env.PORT, 10) || 3000;
-// 1 - boilerplate to get started with Next
 const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });
 const handle = app.getRequestHandler();
@@ -19,7 +17,7 @@ const handle = app.getRequestHandler();
 app.prepare().then(() => {
   const server = express();
 
-  // 2 - add session management to Express
+  // 2 -
   const sessionConfig = {
     secret: uid.sync(18),
     cookie: {
@@ -29,7 +27,7 @@ app.prepare().then(() => {
     saveUninitialized: true
   };
   server.use(session(sessionConfig));
-  server.use(bodyparser.json());
+  server.use(bodyParser.json());
 
   // 3 - configuring Auth0Strategy
   const auth0Strategy = new Auth0Strategy(
@@ -52,23 +50,12 @@ app.prepare().then(() => {
   // 5 - adding Passport and authentication routes
   server.use(passport.initialize());
   server.use(passport.session());
+  server.use(authRoutes);
 
-  // 6 - function to restrict access to routes
-  const restrictAccess = (req, res, next) => {
-    if (!req.isAuthenticated()) return res.redirect("/login");
-    next();
-  };
-
-  // 7 - restricting access to some pages & files that you're going to make next
-  server.use("/write", restrictAccess);
-  server.use("/edit", restrictAccess);
-  server.use("/api/*", restrictAccess);
-
-  // 8 - handling routes with Next.js
+  // handling everything else with Next.js
   server.get("*", handle);
 
-  // 9 - creating a port variable and listening on it
-  const port = process.env.PORT || 8081;
+  const port = process.env.PORT || 3000;
 
   http.createServer(server).listen(port, () => {
     console.log(`listening on port ${port}`);
